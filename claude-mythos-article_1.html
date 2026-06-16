@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Mythos とは何か？ — AI初心者・中級者向け解説</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@400;500;700&display=swap');
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2333;
+    --accent: #58a6ff;
+    --accent2: #3fb950;
+    --warn: #f0883e;
+    --danger: #ff7b72;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --border: #30363d;
+    --serif: 'Noto Serif JP', serif;
+    --sans: 'Noto Sans JP', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.9;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 360px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 56px 32px 48px;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 20% 60%, #1a2a4a 0%, #0d1117 60%);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at 70% 30%, rgba(88,166,255,0.10) 0%, transparent 50%),
+      radial-gradient(circle at 30% 80%, rgba(63,185,80,0.07) 0%, transparent 45%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-family: var(--sans);
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.4;
+    max-width: 640px;
+  }
+
+  .hero h1 span {
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    margin-top: 16px;
+    color: var(--text-muted);
+    font-size: 14px;
+    max-width: 520px;
+  }
+
+  .meta-row {
+    margin-top: 28px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 99px;
+    letter-spacing: 0.06em;
+  }
+  .badge-blue  { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
+  .badge-green { background: rgba(63,185,80,0.12);  color: var(--accent2); border: 1px solid rgba(63,185,80,0.25); }
+  .badge-warn  { background: rgba(240,136,62,0.12); color: var(--warn);    border: 1px solid rgba(240,136,62,0.25); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── SECTION ── */
+  section {
+    margin-top: 56px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    display: block;
+    height: 1px;
+    width: 40px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    line-height: 1.5;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 28px 0 10px;
+    color: var(--accent);
+  }
+
+  p { margin-bottom: 16px; color: #c9d1d9; }
+  p:last-child { margin-bottom: 0; }
+
+  /* ── ANALOGY BOX ── */
+  .analogy {
+    background: var(--bg2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+    position: relative;
+  }
+
+  .analogy-label {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: var(--accent2);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .analogy p { color: var(--text-muted); font-size: 15px; }
+
+  /* ── CALLOUT ── */
+  .callout {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+
+  .callout.warn {
+    border-color: rgba(240,136,62,0.4);
+    background: rgba(240,136,62,0.05);
+  }
+
+  .callout.blue {
+    border-color: rgba(88,166,255,0.35);
+    background: rgba(88,166,255,0.05);
+  }
+
+  .callout-title {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .callout.warn .callout-title { color: var(--warn); }
+  .callout.blue .callout-title { color: var(--accent); }
+  .callout p { font-size: 14px; }
+
+  /* ── STAT TILES ── */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin: 28px 0;
+  }
+
+  .stat-tile {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* ── TIMELINE / STEPS ── */
+  .steps { margin: 24px 0; }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+
+  .step-icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    background: rgba(88,166,255,0.12);
+    border: 1px solid rgba(88,166,255,0.3);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .step-body {}
+  .step-title { font-weight: 700; font-size: 14px; color: var(--text); margin-bottom: 4px; }
+  .step-desc  { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+  /* ── PARTNER LOGOS (text-only) ── */
+  .partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 20px 0;
+  }
+
+  .partner-chip {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 48px 0 0;
+  }
+
+  /* ── Q&A ── */
+  .qa { margin: 12px 0; }
+
+  details {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+
+  summary {
+    padding: 16px 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+  }
+
+  summary::after {
+    content: '＋';
+    font-size: 16px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+  }
+
+  details[open] summary::after {
+    content: '－';
+  }
+
+  .qa-body {
+    padding: 0 20px 16px;
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 64px;
+    border-top: 1px solid var(--border);
+    padding: 28px 24px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    .hero { padding: 40px 20px 36px; }
+    .container { padding: 0 16px 60px; }
+    .stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<header class="hero">
+  <div class="hero-tag">Anthropic AI 解説コラム</div>
+  <h1>
+    <span>Claude Mythos</span> とは何か？<br>
+    一般公開されていない最強AIの話
+  </h1>
+  <p class="hero-sub">AI初心者・中級者向けにわかりやすく解説。ちょっと難しい概念は、小中学生にも伝わるたとえ話つきで。</p>
+  <div class="meta-row">
+    <span class="badge badge-blue">初心者OK</span>
+    <span class="badge badge-green">中級者向け補足あり</span>
+    <span class="badge badge-warn">2026年6月時点の情報</span>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- ── 1. そもそも ── -->
+  <section>
+    <div class="section-label">はじめに</div>
+    <h2>ChatGPTやClaudeとは違う、「非公開の最強AI」の話です</h2>
+    <p>
+      みなさんが普段使っているAI（ChatGPTやClaude.aiなど）は、世界中の誰でも使えます。
+      でも2026年4月、Anthropicは<strong>一般には公開しない、特別なAI</strong>を作りました。
+      それが <strong>Claude Mythos Preview（クロード・ミトス・プレビュー）</strong> です。
+    </p>
+    <p>
+      「なぜ公開しないの？」と思うかもしれません。その理由こそが、このAIを理解するうえで一番大切なポイントです。
+    </p>
+
+    <div class="analogy">
+      <div class="analogy-label">🍀 たとえ話：小中学生向け</div>
+      <p>
+        科学の実験で「とても鋭いメス（手術ナイフ）」を作ったとします。
+        お医者さんが使えば命を救えるけど、間違った人が使ったら危険です。
+        だから学校には置かず、ちゃんと訓練した病院だけに渡す——Mythos はそういう立ち位置のAIです。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 2. 何がすごいのか ── -->
+  <section>
+    <div class="section-label">能力</div>
+    <h2>Mythosの「すごさ」：サイバーセキュリティの天才</h2>
+    <p>
+      Mythos は汎用AIなので文章も書けるし会話もできます。でも際立っているのが<strong>コンピューターのセキュリティ問題を見つける能力</strong>。
+      専門家チームが何週間もかけて探すような「脆弱性（ぜいじゃくせい）」を、Mythosは自分で読んで、考えて、短時間で発見します。
+    </p>
+
+    <div class="analogy">
+      <div class="analogy-label">🍀 たとえ話：小中学生向け</div>
+      <p>
+        「脆弱性」とは、家の鍵のかかっていない窓のようなもの。
+        泥棒（ハッカー）に見つかる前に、自分で先に見つけて窓を閉める——それがセキュリティの仕事です。
+        Mythosはこの「窓探し」が人間より圧倒的に速く、正確なのです。
+      </p>
+    </div>
+
+    <div class="stats">
+      <div class="stat-tile">
+        <div class="stat-num">1万件+</div>
+        <div class="stat-label">発見された<br>高・重大リスクの脆弱性</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">参加パートナー組織<br>（2026年6月時点）</div>
+      </div>
+      <div class="stat-tile">
+        <div class="stat-num">15か国+</div>
+        <div class="stat-tile">
+        <div class="stat-label">プログラム参加国</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout blue">
+      <div class="callout-title">🔬 中級者向け補足</div>
+      <p>
+        Anthropicの研究チームは、Mythosに100件のLinuxカーネルの脆弱性リストを渡し、「攻撃コードを自律的に書いてみて」と指示しました。
+        Mythosは自分でリストを絞り込み、半数以上の攻撃コードを<strong>人間が一切介入せずに</strong>作り上げました。
+        これが「人間トップ層を超えた」と表現される理由です。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 3. なぜ非公開なのか ── -->
+  <section>
+    <div class="section-label">なぜ公開しないのか</div>
+    <h2>強すぎるから、あえて公開しない</h2>
+    <p>
+      Anthropicは安全性を最重視する会社です。Mythosは<strong>攻撃にも使えるほどの能力</strong>を持っています。
+      悪意ある人が使えば、病院・電力・金融などの重要インフラを狙うサイバー攻撃が格段に増える恐れがあります。
+    </p>
+    <p>
+      だから「全員に使わせる」のではなく、<strong>厳しい審査をクリアした組織だけ</strong>に渡すことにしました。それが「Project Glasswing（グラスウィング）」というプログラムです。
+    </p>
+
+    <div class="callout warn">
+      <div class="callout-title">⚠️ Anthropicの警告</div>
+      <p>
+        「今後6〜12か月以内に、他のAI会社も同じレベルのモデルを持つようになる。
+        安全策なしで公開されれば、サイバー攻撃の頻度と規模が劇的に増す可能性がある」とAnthropicは述べています。
+        Glasswingは、その前に守る側を先行させようという"先手"の試みです。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 4. Project Glasswing ── -->
+  <section>
+    <div class="section-label">Project Glasswing</div>
+    <h2>「守る側」だけに渡す——Glasswingとは</h2>
+    <p>
+      Glasswing（グラスウィング）とは、透明な羽を持つ南米の蝶の名前。
+      見えにくい（非公開）けれど美しく、繊細な存在——プログラム名にぴったりのネーミングです。
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">🛡️</div>
+        <div class="step-body">
+          <div class="step-title">守るためだけに使う</div>
+          <div class="step-desc">参加組織はMythosを攻撃ではなく「防御」目的にのみ使うことが条件です。自社のコードの穴を探して、修正します。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🔒</div>
+        <div class="step-body">
+          <div class="step-title">厳しいセキュリティ審査</div>
+          <div class="step-desc">参加には厳格な基準があり、誰でもは参加できません。情報の取り扱いについても高い基準が求められます。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">🌐</div>
+        <div class="step-body">
+          <div class="step-title">発見した知見は業界全体に共有</div>
+          <div class="step-desc">Anthropicは参加組織で得られた知見をまとめ、セキュリティ業界全体に還元します。</div>
+        </div>
+      </div>
+    </div>
+
+    <p>参加しているパートナー組織（ローンチ時）：</p>
+    <div class="partners">
+      <span class="partner-chip">Amazon Web Services</span>
+      <span class="partner-chip">Apple</span>
+      <span class="partner-chip">Broadcom</span>
+      <span class="partner-chip">Cisco</span>
+      <span class="partner-chip">CrowdStrike</span>
+      <span class="partner-chip">Google</span>
+      <span class="partner-chip">JPMorganChase</span>
+      <span class="partner-chip">Linux Foundation</span>
+      <span class="partner-chip">Microsoft</span>
+      <span class="partner-chip">NVIDIA</span>
+      <span class="partner-chip">Palo Alto Networks</span>
+    </div>
+    <p style="font-size:13px;color:var(--text-muted);">
+      エネルギー・医療・水道・通信・ハードウェアなど社会インフラを担う組織が参加しています。
+    </p>
+  </section>
+
+  <!-- ── 5. 私たちへの影響 ── -->
+  <section>
+    <div class="section-label">私たちへの関係</div>
+    <h2>Mythosは使えないけど、恩恵は受けている</h2>
+    <p>
+      Mythosは一般公開されていませんが、私たちの生活には間接的に関係があります。
+      私たちが毎日使っているOS、ブラウザ、アプリ——その脆弱性をMythosが発見・修正する手助けをしているからです。
+    </p>
+
+    <div class="analogy">
+      <div class="analogy-label">🍀 たとえ話：小中学生向け</div>
+      <p>
+        水道局の人が水道管の点検をしてくれているから、蛇口をひねれば安全な水が出ます。
+        私たちは水道局に直接会うことはないけど、毎日お世話になっていますよね。
+        Mythosの役割はそれに似ています。
+      </p>
+    </div>
+
+    <div class="callout blue">
+      <div class="callout-title">💡 医療・病院との関係</div>
+      <p>
+        電子カルテや医療機器がサイバー攻撃を受けると、患者の安全に直結します。
+        Glasswingに医療セクターの組織が参加することで、病院インフラのセキュリティが向上します。
+        医療従事者の立場からも、Mythosプログラムは他人事ではありません。
+      </p>
+    </div>
+  </section>
+
+  <!-- ── 6. Q&A ── -->
+  <section>
+    <div class="section-label">よくある疑問</div>
+    <h2>Q &amp; A</h2>
+
+    <div class="qa">
+      <details>
+        <summary>Claude.aiで使えるClaudeとMythosは何が違うの？</summary>
+        <div class="qa-body">
+          Claude.aiで使えるのはClaude Sonnetなどの「公開モデル」です。Mythosは同じAnthropicが作ったAIですが、能力が段違いに高く、特にセキュリティ分野で人間のトップ専門家を超えるとされています。公開モデルも優秀ですが、Mythosはまだ一般には渡せないレベル、という整理です。
+        </div>
+      </details>
+
+      <details>
+        <summary>将来的に一般公開される可能性は？</summary>
+        <div class="qa-body">
+          Anthropicは「他社も同レベルのモデルを持つようになれば、状況は変わる」というニュアンスを示しています。ただ現時点では、悪用リスクが高いため非公開の方針を維持しています。安全性の評価・対策が進めば段階的に公開の議論がなされるかもしれません。
+        </div>
+      </details>
+
+      <details>
+        <summary>「脆弱性1万件以上発見」って、今まで危険だったの？</summary>
+        <div class="qa-body">
+          大規模なソフトウェアには必ず未発見の脆弱性があります。これは昔も今も同じで、発見・修正が追いつかないのがセキュリティの現実です。Mythosはその発見速度を劇的に上げる存在。「今まで知らなかった穴を早急に塞げるようになった」と理解するのが正確です。
+        </div>
+      </details>
+
+      <details>
+        <summary>Anthropicはなぜこんな危険なAIを作ったの？</summary>
+        <div class="qa-body">
+          どの会社も作らなくても、技術の進歩で「誰かが作る」状況になっていました。Anthropicの判断は「どうせ生まれるなら、安全を最重視する会社が先に作って、守る側のために使う仕組みを整備すべき」というものです。これは難しい倫理的判断ですが、Glasswingはその答えのひとつといえます。
+        </div>
+      </details>
+
+      <details>
+        <summary>日本の組織は参加できるの？</summary>
+        <div class="qa-body">
+          拡張後のプログラムは15か国以上に広がっており、日本が排除されているという情報はありません。ただし参加には厳しい審査があり、社会インフラに関わる組織が優先されています。一般企業や病院が個別に申し込める段階ではないとみられます。
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ── まとめ ── -->
+  <section>
+    <div class="section-label">まとめ</div>
+    <h2>3行で整理すると</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">①</div>
+        <div class="step-body">
+          <div class="step-title">Mythosは「非公開の最強AI」</div>
+          <div class="step-desc">サイバーセキュリティの能力が突出しており、強力すぎるため一般公開しない判断がされている。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">②</div>
+        <div class="step-body">
+          <div class="step-title">Project Glasswingで「守る側」だけに提供</div>
+          <div class="step-desc">世界の重要インフラを守る審査済み組織が、社会の脆弱性を発見・修正するために使う。</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-icon">③</div>
+        <div class="step-body">
+          <div class="step-title">私たちは恩恵を間接的に受けている</div>
+          <div class="step-desc">毎日使うOS・ブラウザ・医療システムが守られることで、気づかないうちに安全を享受している。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <p>情報出典：<a href="https://www.anthropic.com/glasswing" target="_blank">Anthropic — Project Glasswing</a>、<a href="https://www.anthropic.com/news/expanding-project-glasswing" target="_blank">Expanding Project Glasswing</a>（2026年4〜6月）</p>
+  <p style="margin-top:8px;">Claude Sonnet 4.6 が生成した解説コラムです。医療・法律的判断の根拠にはなりません。</p>
+</footer>
+
+</body>
+</html>
